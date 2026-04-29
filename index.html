@@ -381,6 +381,28 @@
             .stat-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
             .stat-card { padding: 12px; }
         }
+
+        /* Timer running indicator */
+        .nav-icon-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nav-pulse {
+            position: absolute;
+            top: -3px;
+            right: -5px;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            animation: nav-pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes nav-pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(0.6); }
+        }
     </style>
 </head>
 <body>

@@ -8,8 +8,8 @@ import { op_UnaryNegation_Int32 } from "./fable_modules/fable-library-js.4.24.0/
 import { view as view_4, totalSecondsForPhase } from "./Timer.fs.js";
 import { createObj, equals } from "./fable_modules/fable-library-js.4.24.0/Util.js";
 import { createElement } from "react";
+import { empty as empty_1, singleton as singleton_1, append as append_1, delay, toList } from "./fable_modules/fable-library-js.4.24.0/Seq.js";
 import { reactApi } from "./fable_modules/Feliz.2.9.0/./Interop.fs.js";
-import { singleton as singleton_1, delay, toList } from "./fable_modules/fable-library-js.4.24.0/Seq.js";
 import { view as view_1 } from "./SessionLog.fs.js";
 import { view as view_2 } from "./Stats.fs.js";
 import { view as view_3 } from "./Settings.fs.js";
@@ -200,21 +200,24 @@ export function update(msg, model) {
     }
 }
 
-function navbar(activeTab, dispatch) {
-    let elems_1;
+function navbar(activeTab, timerStatus, dispatch) {
+    let elems_2;
     const tabButton = (tab, icon, label) => {
-        let elems;
+        let elems_1, elems;
+        const showPulse = equals(tab, new ActiveTab(0, [])) && equals(timerStatus, new TimerStatus_5(1, []));
         return createElement("button", createObj(ofArray([["className", equals(activeTab, tab) ? "nav-tab active" : "nav-tab"], ["onClick", (_arg) => {
             dispatch(new Msg(0, [tab]));
-        }], (elems = [createElement("span", {
+        }], (elems_1 = [createElement("div", createObj(ofArray([["className", "nav-icon-wrap"], (elems = toList(delay(() => append_1(singleton_1(createElement("span", {
             className: "nav-icon",
             children: icon,
-        }), createElement("span", {
+        })), delay(() => (showPulse ? singleton_1(createElement("span", {
+            className: "nav-pulse",
+        })) : empty_1()))))), ["children", reactApi.Children.toArray(Array.from(elems))])]))), createElement("span", {
             className: "nav-label",
             children: label,
-        })], ["children", reactApi.Children.toArray(Array.from(elems))])])));
+        })], ["children", reactApi.Children.toArray(Array.from(elems_1))])])));
     };
-    return createElement("nav", createObj(ofArray([["className", "navbar"], (elems_1 = [tabButton(new ActiveTab(0, []), "⏱️", "Timer"), tabButton(new ActiveTab(1, []), "📋", "Log"), tabButton(new ActiveTab(2, []), "📊", "Stats"), tabButton(new ActiveTab(3, []), "⚙️", "Settings")], ["children", reactApi.Children.toArray(Array.from(elems_1))])])));
+    return createElement("nav", createObj(ofArray([["className", "navbar"], (elems_2 = [tabButton(new ActiveTab(0, []), "⏱️", "Timer"), tabButton(new ActiveTab(1, []), "📋", "Log"), tabButton(new ActiveTab(2, []), "📊", "Stats"), tabButton(new ActiveTab(3, []), "⚙️", "Settings")], ["children", reactApi.Children.toArray(Array.from(elems_2))])])));
 }
 
 /**
@@ -230,6 +233,6 @@ export function view(model, dispatch) {
     })], ["children", reactApi.Children.toArray(Array.from(elems))])]))), createElement("main", createObj(ofArray([["className", "app-main"], (elems_1 = toList(delay(() => {
         const matchValue = model.ActiveTab;
         return (matchValue.tag === 1) ? singleton_1(view_1(model, dispatch)) : ((matchValue.tag === 2) ? singleton_1(view_2(model, dispatch)) : ((matchValue.tag === 3) ? singleton_1(view_3(model, dispatch)) : singleton_1(view_4(model, dispatch))));
-    })), ["children", reactApi.Children.toArray(Array.from(elems_1))])]))), navbar(model.ActiveTab, dispatch)], ["children", reactApi.Children.toArray(Array.from(elems_2))])])));
+    })), ["children", reactApi.Children.toArray(Array.from(elems_1))])]))), navbar(model.ActiveTab, model.TimerStatus, dispatch)], ["children", reactApi.Children.toArray(Array.from(elems_2))])])));
 }
 

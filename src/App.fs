@@ -212,13 +212,21 @@ let update (msg: Msg) (model: Model) : Model =
         { model with Sessions = newSessions }
 
 /// Tab navigation bar
-let private navbar (activeTab: ActiveTab) (dispatch: Msg -> unit) =
+let private navbar (activeTab: ActiveTab) (timerStatus: TimerStatus) (dispatch: Msg -> unit) =
     let tabButton (tab: ActiveTab) (icon: string) (label: string) =
+        let showPulse = tab = TimerTab && timerStatus = Running
         Html.button [
             prop.className (if activeTab = tab then "nav-tab active" else "nav-tab")
             prop.onClick (fun _ -> dispatch (SwitchTab tab))
             prop.children [
-                Html.span [ prop.className "nav-icon"; prop.text icon ]
+                Html.div [
+                    prop.className "nav-icon-wrap"
+                    prop.children [
+                        Html.span [ prop.className "nav-icon"; prop.text icon ]
+                        if showPulse then
+                            Html.span [ prop.className "nav-pulse" ]
+                    ]
+                ]
                 Html.span [ prop.className "nav-label"; prop.text label ]
             ]
         ]
@@ -257,6 +265,6 @@ let view (model: Model) (dispatch: Msg -> unit) =
                 ]
             ]
 
-            navbar model.ActiveTab dispatch
+            navbar model.ActiveTab model.TimerStatus dispatch
         ]
     ]
