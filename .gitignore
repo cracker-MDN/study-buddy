@@ -3,5 +3,4 @@ dist/
 bin/
 obj/
 *.fs.js.map
-.fable/
 .ionide/
