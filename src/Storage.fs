@@ -1,3 +1,23 @@
+// Persistence layer — all user data is stored in browser localStorage as JSON.
+//
+// Strategy:
+//   Each of the three mutable collections (subjects, sessions, settings) gets its own
+//   localStorage key (see the *Key literals below).  On every state change that touches
+//   one of these collections, App.update calls the corresponding save* function so the
+//   data survives page refreshes without a backend.
+//
+// Serialisation:
+//   Thoth.Json provides type-safe encode/decode pipelines.  The Encode and Decode
+//   sub-modules below are kept private to this file; callers use only the six public
+//   load*/save* functions.  Decode failures (e.g. a corrupt or missing key) are
+//   silently swallowed and fall back to an empty list / TimerSettings.Default so the
+//   app always starts in a valid state.
+//
+// Limitations:
+//   localStorage is synchronous, has a ~5 MB per-origin cap, and is scoped to the
+//   browser profile — there is no cross-device sync.  Clearing site data in the
+//   browser will wipe all sessions and settings.
+
 module StudyBuddy.Storage
 
 open System

@@ -1,3 +1,23 @@
+// Domain model for StudyBuddy.
+//
+// Core entities:
+//   Subject      - a course or topic the user studies, identified by a stable Guid and
+//                  displayed with a user-chosen hex color.
+//   StudySession - an immutable record of one completed pomodoro work interval: which
+//                  subject was studied, when it started, how long it lasted, and any
+//                  free-text notes the user added.
+//
+// Timer state machine:
+//   TimerStatus  - Idle -> Running <-> Paused -> Finished -> (reset to Idle)
+//   PomodoroPhase - cycles Work -> ShortBreak -> Work -> ... -> LongBreak based on
+//                   TimerSettings.LongBreakAfter (default every 4 pomodoros).
+//
+// Application shell:
+//   Model        - single source of truth for the entire app; passed down to every view.
+//   Msg          - exhaustive discriminated union of every event that can mutate Model;
+//                  processed by App.update in a pure, testable function.
+//   ActiveTab    - which of the four bottom-nav pages is currently visible.
+
 module StudyBuddy.Types
 
 open System
