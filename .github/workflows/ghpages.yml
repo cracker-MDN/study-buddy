@@ -36,14 +36,17 @@ jobs:
       - name: Restore .NET tools
         run: dotnet tool restore
 
-      - name: Restore .NET project dependencies
-        run: dotnet restore src
-
       - name: Install npm dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Restore .NET project dependencies
+        run: dotnet restore src/App.fsproj
+
+      - name: Compile F# to JavaScript
+        run: dotnet fable src --noRestore
+
+      - name: Bundle with Vite
+        run: npx vite build
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
