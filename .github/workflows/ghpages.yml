@@ -36,6 +36,9 @@ jobs:
       - name: Restore .NET tools
         run: dotnet tool restore
 
+      - name: Restore .NET project dependencies
+        run: dotnet restore src
+
       - name: Install npm dependencies
         run: npm ci
 
