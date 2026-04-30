@@ -124,6 +124,47 @@ let private statCard (label: string) (value: string) (icon: string) =
         ]
     ]
 
+/// Calculate current consecutive-day study streak
+let private studyStreak (sessions: StudySession list) =
+    let today = DateTime.Now.Date
+    let studiedDays =
+        sessions
+        |> List.map (fun s -> s.StartedAt.Date)
+        |> List.distinct
+        |> Set.ofList
+
+    let rec countStreak (date: DateTime) acc =
+        if studiedDays.Contains(date) then countStreak (date.AddDays(-1.0)) (acc + 1)
+        else acc
+
+    if studiedDays.Contains(today) then countStreak today 0
+    elif studiedDays.Contains(today.AddDays(-1.0)) then countStreak (today.AddDays(-1.0)) 0
+    else 0
+
+/// Streak banner card
+let private streakBanner (streak: int) =
+    let message =
+        if streak = 0 then "Study today to start a streak!"
+        elif streak = 1 then "Keep it going tomorrow!"
+        elif streak < 7 then "Building momentum!"
+        elif streak < 30 then "You're on fire!"
+        else "Legendary consistency!"
+
+    Html.div [
+        prop.className "streak-banner"
+        prop.children [
+            Html.div [ prop.className "streak-icon"; prop.text "\U0001F525" ]
+            Html.div [
+                prop.className "streak-body"
+                prop.children [
+                    Html.div [ prop.className "streak-value"; prop.text (string streak) ]
+                    Html.div [ prop.className "streak-sublabel"; prop.text (sprintf "day%s in a row" (if streak = 1 then "" else "s")) ]
+                ]
+            ]
+            Html.div [ prop.className "streak-message"; prop.text message ]
+        ]
+    ]
+
 /// Daily study minutes for a week view
 let private weeklyActivity (sessions: StudySession list) =
     let today = DateTime.Now.Date
@@ -186,12 +227,15 @@ let view (model: Model) (_dispatch: Msg -> unit) =
         if sessionCount = 0 then 0
         else total / sessionCount
     let breakdown = subjectBreakdown model.Subjects recentSessions
+    let streak = studyStreak model.Sessions
 
     Html.div [
         prop.className "stats-page"
         prop.children [
             Html.h2 [ prop.text "Study Statistics" ]
             Html.p [ prop.className "stats-subtitle"; prop.text "Last 30 days" ]
+
+            streakBanner streak
 
             Html.div [
                 prop.className "stat-cards"

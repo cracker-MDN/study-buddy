@@ -404,6 +404,23 @@
             50% { opacity: 0.35; transform: scale(0.6); }
         }
 
+        /* Streak banner */
+        .streak-banner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: linear-gradient(135deg, rgba(243, 156, 18, 0.15), rgba(231, 76, 60, 0.15));
+            border: 1px solid rgba(243, 156, 18, 0.35);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+        .streak-icon { font-size: 2rem; }
+        .streak-body { flex: 1; }
+        .streak-value { font-size: 1.6rem; font-weight: 700; color: var(--warning); }
+        .streak-sublabel { font-size: 0.8rem; color: var(--text-secondary); margin-top: 2px; }
+        .streak-message { font-size: 0.85rem; color: var(--text-secondary); text-align: right; }
+
         /* Today summary card */
         .today-summary-card {
             display: flex;

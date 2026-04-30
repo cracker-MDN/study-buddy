@@ -3,13 +3,14 @@ import { op_UnaryNegation_Int32 } from "./fable_modules/fable-library-js.4.24.0/
 import { ofArray, singleton, mapIndexed, length, max as max_1, isEmpty, tryFind, map, sortByDescending, sumBy, filter } from "./fable_modules/fable-library-js.4.24.0/List.js";
 import { printf, toText } from "./fable_modules/fable-library-js.4.24.0/String.js";
 import { map as map_1, defaultArg } from "./fable_modules/fable-library-js.4.24.0/Option.js";
-import { List_groupBy } from "./fable_modules/fable-library-js.4.24.0/Seq2.js";
-import { int32ToString, createObj, comparePrimitives, stringHash } from "./fable_modules/fable-library-js.4.24.0/Util.js";
+import { List_distinct, List_groupBy } from "./fable_modules/fable-library-js.4.24.0/Seq2.js";
+import { int32ToString, dateHash, createObj, comparePrimitives, stringHash } from "./fable_modules/fable-library-js.4.24.0/Util.js";
 import { defaultOf } from "./fable_modules/Feliz.2.9.0/../.././fable_modules/fable-library-js.4.24.0/Util.js";
 import { max } from "./fable_modules/fable-library-js.4.24.0/Double.js";
 import { createElement } from "react";
 import { append, singleton as singleton_1, collect, delay, toList } from "./fable_modules/fable-library-js.4.24.0/Seq.js";
 import { reactApi } from "./fable_modules/Feliz.2.9.0/./Interop.fs.js";
+import { FSharpSet__Contains, ofList } from "./fable_modules/fable-library-js.4.24.0/Set.js";
 import { rangeDouble } from "./fable_modules/fable-library-js.4.24.0/Range.js";
 import { item } from "./fable_modules/fable-library-js.4.24.0/Array.js";
 
@@ -126,6 +127,58 @@ function statCard(label, value, icon) {
     })], ["children", reactApi.Children.toArray(Array.from(elems))])])))], ["children", reactApi.Children.toArray(Array.from(elems_1))])])));
 }
 
+function studyStreak(sessions) {
+    const today = date_2(now());
+    const studiedDays = ofList(List_distinct(map((s) => date_2(s.StartedAt), sessions), {
+        Equals: equals,
+        GetHashCode: dateHash,
+    }), {
+        Compare: compare,
+    });
+    const countStreak = (date_mut, acc_mut) => {
+        countStreak:
+        while (true) {
+            const date = date_mut, acc = acc_mut;
+            if (FSharpSet__Contains(studiedDays, date)) {
+                date_mut = addDays(date, -1);
+                acc_mut = (acc + 1);
+                continue countStreak;
+            }
+            else {
+                return acc | 0;
+            }
+            break;
+        }
+    };
+    if (FSharpSet__Contains(studiedDays, today)) {
+        return countStreak(today, 0) | 0;
+    }
+    else if (FSharpSet__Contains(studiedDays, addDays(today, -1))) {
+        return countStreak(addDays(today, -1), 0) | 0;
+    }
+    else {
+        return 0;
+    }
+}
+
+function streakBanner(streak) {
+    let elems_1, elems, arg;
+    const message = (streak === 0) ? "Study today to start a streak!" : ((streak === 1) ? "Keep it going tomorrow!" : ((streak < 7) ? "Building momentum!" : ((streak < 30) ? "You\'re on fire!" : "Legendary consistency!")));
+    return createElement("div", createObj(ofArray([["className", "streak-banner"], (elems_1 = [createElement("div", {
+        className: "streak-icon",
+        children: "🔥",
+    }), createElement("div", createObj(ofArray([["className", "streak-body"], (elems = [createElement("div", {
+        className: "streak-value",
+        children: int32ToString(streak),
+    }), createElement("div", {
+        className: "streak-sublabel",
+        children: (arg = ((streak === 1) ? "" : "s"), toText(printf("day%s in a row"))(arg)),
+    })], ["children", reactApi.Children.toArray(Array.from(elems))])]))), createElement("div", {
+        className: "streak-message",
+        children: message,
+    })], ["children", reactApi.Children.toArray(Array.from(elems_1))])])));
+}
+
 function weeklyActivity(sessions) {
     let elems_3, elems_2;
     const today = date_2(now());
@@ -175,12 +228,13 @@ export function view(model, _dispatch) {
     const sessionCount = length(recentSessions) | 0;
     const avgPerSession = ((sessionCount === 0) ? 0 : ~~(total / sessionCount)) | 0;
     const breakdown = subjectBreakdown(model.Subjects, recentSessions);
+    const streak = studyStreak(model.Sessions) | 0;
     return createElement("div", createObj(ofArray([["className", "stats-page"], (elems_3 = toList(delay(() => append(singleton_1(createElement("h2", {
         children: "Study Statistics",
     })), delay(() => append(singleton_1(createElement("p", {
         className: "stats-subtitle",
         children: "Last 30 days",
-    })), delay(() => {
+    })), delay(() => append(singleton_1(streakBanner(streak)), delay(() => {
         let elems;
         return append(singleton_1(createElement("div", createObj(ofArray([["className", "stat-cards"], (elems = [statCard("Total Study Time", formatHours(total), "⏱️"), statCard("Sessions", int32ToString(sessionCount), "📋"), statCard("Avg / Session", formatHours(avgPerSession), "📊"), statCard("Subjects", int32ToString(length(breakdown)), "📚")], ["children", reactApi.Children.toArray(Array.from(elems))])])))), delay(() => append(singleton_1(weeklyActivity(weekSessions)), delay(() => {
             let elems_1, elems_2;
@@ -190,6 +244,6 @@ export function view(model, _dispatch) {
                 children: "Complete some study sessions to see your statistics!",
             })], ["children", reactApi.Children.toArray(Array.from(elems_2))])]))));
         }))));
-    })))))), ["children", reactApi.Children.toArray(Array.from(elems_3))])])));
+    })))))))), ["children", reactApi.Children.toArray(Array.from(elems_3))])])));
 }
 
