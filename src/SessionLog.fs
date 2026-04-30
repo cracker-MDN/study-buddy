@@ -82,6 +82,31 @@ let private daySummary (sessions: StudySession list) =
     let count = List.length sessions
     sprintf "%d session%s \u2022 %s total" count (if count = 1 then "" else "s") (formatDuration totalMinutes)
 
+/// Summary card showing total study time for today
+let private todaySummaryCard (sessions: StudySession list) =
+    let today = DateTime.Today
+    let todaySessions = sessions |> List.filter (fun s -> s.StartedAt.Date = today)
+    let totalMinutes = todaySessions |> List.sumBy (fun s -> s.DurationMinutes)
+    let count = List.length todaySessions
+
+    Html.div [
+        prop.className "today-summary-card"
+        prop.children [
+            Html.div [ prop.className "today-summary-icon"; prop.text "\U0001F4C5" ]
+            Html.div [
+                prop.className "today-summary-body"
+                prop.children [
+                    Html.div [ prop.className "today-summary-value"; prop.text (formatDuration totalMinutes) ]
+                    Html.div [ prop.className "today-summary-label"; prop.text "studied today" ]
+                ]
+            ]
+            Html.div [
+                prop.className "today-summary-sessions"
+                prop.text (sprintf "%d session%s" count (if count = 1 then "" else "s"))
+            ]
+        ]
+    ]
+
 /// Main session log view
 let view (model: Model) (dispatch: Msg -> unit) =
     let grouped = groupByDate model.Sessions
@@ -101,6 +126,8 @@ let view (model: Model) (dispatch: Msg -> unit) =
                         ]
                 ]
             ]
+
+            todaySummaryCard model.Sessions
 
             if model.Sessions.IsEmpty then
                 Html.div [

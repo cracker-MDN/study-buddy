@@ -1,6 +1,6 @@
-import { equals, compare, date as date_1, minute, hour, day, month, year } from "./fable_modules/fable-library-js.4.24.0/Date.js";
+import { today as today_1, equals, compare, date as date_1, minute, hour, day, month, year } from "./fable_modules/fable-library-js.4.24.0/Date.js";
 import { printf, toText } from "./fable_modules/fable-library-js.4.24.0/String.js";
-import { map as map_1, isEmpty, length, sumBy, sortByDescending, ofArray, tryFind } from "./fable_modules/fable-library-js.4.24.0/List.js";
+import { map as map_1, isEmpty, filter, length, sumBy, sortByDescending, ofArray, tryFind } from "./fable_modules/fable-library-js.4.24.0/List.js";
 import { map, defaultArg } from "./fable_modules/fable-library-js.4.24.0/Option.js";
 import { createElement } from "react";
 import { dateHash, createObj } from "./fable_modules/fable-library-js.4.24.0/Util.js";
@@ -92,6 +92,30 @@ function daySummary(sessions) {
     return toText(printf("%d session%s • %s total"))(count)(arg_1)(arg_2);
 }
 
+function todaySummaryCard(sessions) {
+    let elems_1, elems, arg_1;
+    const today = today_1();
+    const todaySessions = filter((s) => equals(date_1(s.StartedAt), today), sessions);
+    const totalMinutes = sumBy((s_1) => s_1.DurationMinutes, todaySessions, {
+        GetZero: () => 0,
+        Add: (x, y) => (x + y),
+    }) | 0;
+    const count = length(todaySessions) | 0;
+    return createElement("div", createObj(ofArray([["className", "today-summary-card"], (elems_1 = [createElement("div", {
+        className: "today-summary-icon",
+        children: "📅",
+    }), createElement("div", createObj(ofArray([["className", "today-summary-body"], (elems = [createElement("div", {
+        className: "today-summary-value",
+        children: formatDuration(totalMinutes),
+    }), createElement("div", {
+        className: "today-summary-label",
+        children: "studied today",
+    })], ["children", reactApi.Children.toArray(Array.from(elems))])]))), createElement("div", {
+        className: "today-summary-sessions",
+        children: (arg_1 = ((count === 1) ? "" : "s"), toText(printf("%d session%s"))(count)(arg_1)),
+    })], ["children", reactApi.Children.toArray(Array.from(elems_1))])])));
+}
+
 /**
  * Main session log view
  */
@@ -108,7 +132,7 @@ export function view(model, dispatch) {
             onClick: (_arg) => {
                 dispatch(new Msg(21, []));
             },
-        })) : empty()))))), ["children", reactApi.Children.toArray(Array.from(elems))])])))), delay(() => {
+        })) : empty()))))), ["children", reactApi.Children.toArray(Array.from(elems))])])))), delay(() => append(singleton(todaySummaryCard(model.Sessions)), delay(() => {
             let elems_1, elems_4;
             return isEmpty(model.Sessions) ? singleton(createElement("div", createObj(ofArray([["className", "empty-state"], (elems_1 = [createElement("div", {
                 className: "empty-icon",
@@ -133,7 +157,7 @@ export function view(model, dispatch) {
                     })], ["children", reactApi.Children.toArray(Array.from(elems_2))])])))), delay(() => map_1((s) => sessionCard(model.Subjects, s, dispatch), sessions)));
                 })), ["children", reactApi.Children.toArray(Array.from(elems_3))])]))));
             }, grouped))), ["children", reactApi.Children.toArray(Array.from(elems_4))])]))));
-        }));
+        }))));
     })), ["children", reactApi.Children.toArray(Array.from(elems_5))])])));
 }
 
