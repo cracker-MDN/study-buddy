@@ -46,6 +46,8 @@
         .app-header {
             text-align: center;
             padding: 24px 16px 8px;
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.08) 0%, rgba(243, 156, 18, 0.06) 100%);
+            border-bottom: 1px solid var(--border);
         }
         .app-header h1 {
             font-size: 1.6rem;
@@ -402,6 +404,13 @@
         @keyframes nav-pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.35; transform: scale(0.6); }
+        }
+        @keyframes tabFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content {
+            animation: tabFadeIn 0.22s ease forwards;
         }
 
         /* Streak banner */

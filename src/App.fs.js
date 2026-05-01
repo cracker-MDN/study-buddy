@@ -10,6 +10,7 @@ import { createObj, equals } from "./fable_modules/fable-library-js.4.24.0/Util.
 import { createElement } from "react";
 import { empty as empty_1, singleton as singleton_1, append as append_1, delay, toList } from "./fable_modules/fable-library-js.4.24.0/Seq.js";
 import { reactApi } from "./fable_modules/Feliz.2.9.0/./Interop.fs.js";
+import { toString } from "./fable_modules/fable-library-js.4.24.0/Types.js";
 import { view as view_1 } from "./SessionLog.fs.js";
 import { view as view_2 } from "./Stats.fs.js";
 import { view as view_3 } from "./Settings.fs.js";
@@ -224,15 +225,15 @@ function navbar(activeTab, timerStatus, dispatch) {
  * Main application view
  */
 export function view(model, dispatch) {
-    let elems_2, elems, elems_1;
-    return createElement("div", createObj(ofArray([["className", "app-container"], (elems_2 = [createElement("header", createObj(ofArray([["className", "app-header"], (elems = [createElement("h1", {
+    let elems_3, elems, elems_2, elems_1;
+    return createElement("div", createObj(ofArray([["className", "app-container"], (elems_3 = [createElement("header", createObj(ofArray([["className", "app-header"], (elems = [createElement("h1", {
         children: "StudyBuddy",
     }), createElement("span", {
         className: "app-subtitle",
         children: "Pomodoro Study Tracker",
-    })], ["children", reactApi.Children.toArray(Array.from(elems))])]))), createElement("main", createObj(ofArray([["className", "app-main"], (elems_1 = toList(delay(() => {
+    })], ["children", reactApi.Children.toArray(Array.from(elems))])]))), createElement("main", createObj(ofArray([["className", "app-main"], (elems_2 = [createElement("div", createObj(ofArray([["key", toString(model.ActiveTab)], ["className", "tab-content"], (elems_1 = toList(delay(() => {
         const matchValue = model.ActiveTab;
         return (matchValue.tag === 1) ? singleton_1(view_1(model, dispatch)) : ((matchValue.tag === 2) ? singleton_1(view_2(model, dispatch)) : ((matchValue.tag === 3) ? singleton_1(view_3(model, dispatch)) : singleton_1(view_4(model, dispatch))));
-    })), ["children", reactApi.Children.toArray(Array.from(elems_1))])]))), navbar(model.ActiveTab, model.TimerStatus, dispatch)], ["children", reactApi.Children.toArray(Array.from(elems_2))])])));
+    })), ["children", reactApi.Children.toArray(Array.from(elems_1))])])))], ["children", reactApi.Children.toArray(Array.from(elems_2))])]))), navbar(model.ActiveTab, model.TimerStatus, dispatch)], ["children", reactApi.Children.toArray(Array.from(elems_3))])])));
 }
 

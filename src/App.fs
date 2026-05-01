@@ -257,11 +257,17 @@ let view (model: Model) (dispatch: Msg -> unit) =
             Html.main [
                 prop.className "app-main"
                 prop.children [
-                    match model.ActiveTab with
-                    | TimerTab -> Timer.view model dispatch
-                    | SessionsTab -> SessionLog.view model dispatch
-                    | StatsTab -> Stats.view model dispatch
-                    | SettingsTab -> Settings.view model dispatch
+                    Html.div [
+                        prop.key (string model.ActiveTab)
+                        prop.className "tab-content"
+                        prop.children [
+                            match model.ActiveTab with
+                            | TimerTab -> Timer.view model dispatch
+                            | SessionsTab -> SessionLog.view model dispatch
+                            | StatsTab -> Stats.view model dispatch
+                            | SettingsTab -> Settings.view model dispatch
+                        ]
+                    ]
                 ]
             ]
 
