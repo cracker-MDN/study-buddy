@@ -4,3 +4,4 @@ bin/
 obj/
 *.fs.js.map
 .ionide/
+.claude/
