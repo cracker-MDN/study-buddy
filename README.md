@@ -4,7 +4,7 @@ A client-side web application for university students to track focused study ses
 
 ## Try it Live
 
-👉 **[https://YOUR_GITHUB_USERNAME.github.io/study-buddy/](https://YOUR_GITHUB_USERNAME.github.io/study-buddy/)**
+👉 **[https://cracker-mdn.github.io/study-buddy/](https://cracker-mdn.github.io/study-buddy/)**
 
 ## Screenshots
 
@@ -59,7 +59,7 @@ The app follows the **Elm Architecture** (Model-View-Update):
 
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/study-buddy.git
+git clone https://github.com/cracker-MDN/study-buddy.git
 cd study-buddy
 
 # Restore .NET tools (Fable compiler)
